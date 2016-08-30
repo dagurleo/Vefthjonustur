@@ -8,7 +8,7 @@ namespace WebApplication.Controllers
 {
     public class HomeController : Controller
     {
-        
+
         public IActionResult Index()
         {
             return View();
@@ -31,6 +31,10 @@ namespace WebApplication.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        public IActionResult FourOFour(){
+          return View();
         }
     }
 }

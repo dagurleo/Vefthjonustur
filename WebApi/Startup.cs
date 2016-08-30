@@ -60,6 +60,15 @@ namespace WebApplication
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.Use(async (context, next) => {
+
+              await next();
+              if(context.Response.StatusCode == 404){
+                context.Request.Path ="/Home";
+                await next();
+              }
+              });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

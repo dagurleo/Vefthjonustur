@@ -54,33 +54,52 @@ namespace WebApplication.Controllers
         }
 
         //GET REQUESTS
+
+        //Gets all courses in the system
         [HttpGet]
         [Route("all")]
         public IEnumerable<Course> GetCourses(){
             return _courses;
         }
 
+        //Gets a course by its id
         [HttpGet]
         [Route("{courseInstanceID:int}")]
         public IActionResult GetCourseById(int courseInstanceID){
             return new ObjectResult(_courses.Single(c => c.ID == courseInstanceID));
         }
 
+        //Gets all students in a specific course
         [HttpGet]
         [Route("{courseInstanceID:int}/students")]
-        public IActionResult GetStudentsByCourse(int courseInstanceID){
-            return new ObjectResult(_courses.Single(c => c.ID == courseInstanceID));
+        public IEnumerable<Student> GetStudentsByCourse(int courseInstanceID){
+            if(courseInstanceID >= _courses.Count){
+              return null;
+            }
+            return _courses.Single(c => c.ID == courseInstanceID).Students;
+
         }
 
         //POST REQUESTS
+
+          //Creates a new course
         [HttpPost]
         [Route("create")]
         public IActionResult CreateCourse(Course course){
             _courses.Add(course);
             return Created("create", course);
         }
+          //Creates a new student in a new course
+        [HttpPost]
+        [Route("{courseInstanceID:int}/students")]
+        public IActionResult AddStudentToCourse(int courseInstanceID, Student student){
+            _courses[courseInstanceID - 1].Students.Add(student);
+            return Created("create", student);
+        }
 
         //PUT REQUESTS(UPDATE)
+
+        //Updates the information of a course
         [HttpPut]
         [Route("{courseInstanceID:int}")]
         public IActionResult UpdateCourse(int courseInstanceID, Course course){
@@ -91,6 +110,8 @@ namespace WebApplication.Controllers
             return new NoContentResult();
         }
         //DELETE REQUESTS
+
+        //Deletes a course
         [HttpDelete]
         [Route("{courseInstanceID:int}")]
         public IActionResult DeleteCourse(int courseInstanceID){
